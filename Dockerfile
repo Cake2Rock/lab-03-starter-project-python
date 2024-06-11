@@ -1,16 +1,9 @@
-FROM python:3.9-alpine AS base
+FROM python:3.9-slim
 
-COPY requirements/backend.in .
+COPY . /app
+WORKDIR /app
+
 RUN python -m venv .venv
-ENV PATH="/.venv/bin:$PATH"
-
-COPY requirements/backend.in .
-RUN pip install -r backend.in
-
-FROM python:3.9-alpine
-COPY --from=base /.venv /.venv
-ENV PATH="/.venv/bin:$PATH"
-COPY build build
-COPY spaceship spaceship
+RUN pip install -r requirements/backend.in
 
 CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"]
